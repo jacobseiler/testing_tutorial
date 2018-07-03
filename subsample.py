@@ -202,13 +202,19 @@ def subsample_grid(input_grid, output_gridsize):
     ----------
 
     RuntimeError 
-        Raised if the dimensions of the input grid are not equal.
+        Raised if the dimensions of `input grid` are not equal.
         Raised if the requested dimensions of the output grid is not an integer
         multiple of the `input_grid` shape. 
-
+        Raised if the dimensions of `input grid` are smaller than the
+        requested dimensions of the output grid.
     """
 
     input_gridsize = input_grid.shape[0]
+
+    if input_gridsize < output_gridsize:
+        print("This is a subsampler.  The output gridsize must be smaller "
+              "than the input gridsize.")
+        raise RuntimeError
 
     if not input_grid.shape == (input_gridsize,
                                 input_gridsize, 
@@ -218,7 +224,7 @@ def subsample_grid(input_grid, output_gridsize):
               "{0}.".format(input_grid.shape)) 
         raise RuntimeError
 
-    if not output_gridsize % input_gridsize == 0:
+    if not input_gridsize % output_gridsize == 0:
         print("The input grid has gridsize {0} and the requested output grid "
               "has gridsize {1}. These must be an integer multiple of each "
               "other.".format(input_gridsize, output_gridsize))
