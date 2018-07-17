@@ -40,8 +40,43 @@ These checks are run by invoking `python tests.py`.
 
 Great, we've now ensured that our code produces the expected output for a specific set on of inputs.  However we want to ensure that any changes we make to the codebase does not break our pipeline.  Whilst we could run the tests every time we make a change, this can become cumbersome.  Furthermore, if we want other people to contribute to our code, we need to ensure that their contributions pass the tests we've outlined.
 
-To achieve this automation we use a practice called **continuous integration (CI)** in which any time commits are pushed to a repository - or pull requests are made - the tests are automatically run.  A swathe of CI services exist but in this tutorial we will focus on [**Travis**](https://travis-ci.org/). 
+To achieve this automation we use a practice called **continuous integration (CI)** in which any time commits are pushed to a repository - or pull requests are made - the tests are automatically run.  A swathe of CI services exist but in this tutorial we will focus on [**Travis**](https://travis-ci.com/). 
 
 ## Travis
 
-The [Travis documentation page](https://docs.travis-ci.com/user/getting-started/) contains the essentials for getting started and will do a much better job than me of telling you exactly what to do.  Here I will just summarise what you need to know. 
+The [Travis documentation page](https://docs.travis-ci.com/user/getting-started/) contains the essentials for getting started and will do a much better job than me of telling you exactly what to do. 
+
+The biggest step is adding the `.travis.yml` file to the repo. This file tells
+Travis exactly what to do when building your repo and specifies what Operating
+System, compiler etc to use. 
+
+The `.travis.yml` file can be split up into a few major sections. 
+
+### include
+
+This section describes the OS, compilers etc that you want to test your code
+on.   Focus on the specifications you want to support.  For example, this
+repository code works for both Python2 and Python3. 
+
+### install
+
+In this Section you will install all your modules and requirements you need to
+execute your code.  Of particular importance is the file `requirements.txt`
+which lists all the Python packages that will need to be installed via `pip`.
+
+### script
+
+The code the build needs to execute!  For this repo all the testing flow is
+kept internal to `tests.py` so all we need to execute is this file.
+
+---
+
+Once Travis has been activated and linked to your Github, a `.travis.yml` is
+located in your repository, Travis will execute every time you push to this
+repo.  The settings under the `notifcations` section in the `.travis.yml` file
+will dictate how you are notified of the outcome of your build.
+
+Whenever you make a pull request to a repo that contains CI, the tests will be
+run *on your branch* and also *on the expected merged branch*.  The outcome of
+the tests will be listed on the pull request, this way the repo maintainer can
+request updates before they accept the pull.
