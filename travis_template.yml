@@ -7,9 +7,9 @@ env:
 notifications:
   email:
     recipients:
-      - jseiler94@gmail.com
-    on_success: change
-    on_failure: always
+      - 
+    on_success: 
+    on_failure: 
 
 matrix:
   fast_finish: true
@@ -19,7 +19,7 @@ matrix:
       dist: trusty
       sudo: required
       compiler: gcc
-      env: COMPILER=gcc PYTHON_VERSION=2.7
+      env: COMPILER=gcc PYTHON_VERSION=
       before_install:
         - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
         
@@ -27,7 +27,7 @@ matrix:
       dist: trusty
       sudo: required
       compiler: gcc
-      env: COMPILER=gcc PYTHON_VERSION=3.6
+      env: COMPILER=gcc PYTHON_VERSION=
       before_install:
         - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 
@@ -43,5 +43,3 @@ install:
 before_script:
 
 script:
-  - cd tests/
-  - python tests.py 
