@@ -1,0 +1,47 @@
+language: python 
+sudo: required
+
+env:
+  global:
+    - NUMPY_VERISON=1.13
+notifications:
+  email:
+    recipients:
+      - jseiler94@gmail.com
+    on_success: change
+    on_failure: always
+
+matrix:
+  fast_finish: true
+
+  include:        
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+      env: COMPILER=gcc PYTHON_VERSION=2.7
+      before_install:
+        - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+        
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+      env: COMPILER=gcc PYTHON_VERSION=3.6
+      before_install:
+        - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+
+install:
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda create -q --yes -n test python=$PYTHON_VERSION 
+  - source activate test
+  - conda install -q --yes -c asmeurer gsl
+  - conda install -q --yes -c anaconda gcc
+  - pip install -r requirements.txt
+ 
+before_script:
+
+script:
+  - cd tests/
+  - python tests.py 
