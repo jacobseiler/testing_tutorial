@@ -18,7 +18,7 @@ def parse_inputs():
     other input (including no input at all) will raise a ValueError. 
 
     If the size of the input grid is less than the size of the output grid a
-    ValueError will be raised. This is a subsampler.
+    ValueError will be raised. This is a downsampler.
 
     If the size of the output grid is not a multiple of the input grid a
     ValueError will be raised.
@@ -80,7 +80,7 @@ def parse_inputs():
 
     # Then check the gridsizes are valid.
     if args.gridsize_in < args.gridsize_out:
-        print("This is a subsampler, the output grid must have a smaller "
+        print("This is a downsampler, the output grid must have a smaller "
               "gridsize than the input grid.")
         raise ValueError 
 
@@ -172,12 +172,12 @@ def read_grid(filepath, gridsize, precision):
     return grid
 
 
-def subsample_grid(input_grid, output_gridsize):
+def downsample_grid(input_grid, output_gridsize):
     """
-    Takes an input grid and subsamples it to a smaller grid size.
+    Takes an input grid and downsamples it to a smaller grid size.
 
     If we were moving from 256^3 grid to a 128^3 grid, then my definition of
-    'subsampling' is to split the 256^3 into discrete (non-overlapping) regions
+    'downsampling' is to split the 256^3 into discrete (non-overlapping) regions
     of 2x2x2 cubes and then take their average.  The average of each 2x2x2 cube
     would then give each new element of the 128^3 grid. 
 
@@ -185,17 +185,17 @@ def subsample_grid(input_grid, output_gridsize):
     ----------
 
     input_grid : `~numpy.ndarray`
-        The 3D data array we will be subsampling from.
+        The 3D data array we will be downsampling from.
 
     output_gridsize : int
-        The size of the grid we're subsampling to.  Must be an integer multiple
+        The size of the grid we're downsampling to.  Must be an integer multiple
         of the `input_grid` shape. 
 
     Returns
     ----------
 
     output_grid : `~numpy.ndarray`
-        The subsampled grid.
+        The downsampled grid.
 
 
     Errors 
@@ -212,7 +212,7 @@ def subsample_grid(input_grid, output_gridsize):
     input_gridsize = input_grid.shape[0]
 
     if input_gridsize < output_gridsize:
-        print("This is a subsampler.  The output gridsize must be smaller "
+        print("This is a downsampler.  The output gridsize must be smaller "
               "than the input gridsize.")
         raise RuntimeError
 
@@ -264,8 +264,8 @@ if __name__ == '__main__':
                            args["precision"])
  
     print("Input grid read, now convolving with the footprint.")
-    output_grid = subsample_grid(input_grid, args["gridsize_in"], 
-                                 args["gridsize_out"])
+    output_grid = downsample_grid(input_grid, args["gridsize_in"], 
+                                  args["gridsize_out"])
 
     final_new_density.tofile(args["fname_out"])
     print("Subsampled grid saved to {0}".format(args["fname_out"]))

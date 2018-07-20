@@ -12,22 +12,24 @@ except ImportError: #Python3
     from urllib.request import urlretrieve
 import subprocess
 
+# Get the directorys where we launched this script from and where the
+# downsample script is located.
 test_dir = os.path.dirname(os.path.realpath(__file__))
 script_dir = "{0}/../src/".format(test_dir)
 sys.path.append(script_dir)
 
-import subsample
+import downsample 
 
 
 def unit_tests(grid, expected_gridsize, expected_datatype=np.float64):
     """
-    Tests some fundamental properties of the grids output by `subsample`.
+    Tests some fundamental properties of the grids output by `downsample`.
 
     Parameters
     ----------
 
     grid : `~numpy.ndarray`
-        The 3D downsampled array created by `subsample`. 
+        The 3D downsampled array created by `downsample`. 
     
     expected_gridsize : int, optional
         The expected 1D size of output grid.  Default : 128 and 64.
@@ -87,7 +89,7 @@ def test_homogenous_input(input_gridsize=128, output_gridsize=64):
         ..note::
             `output_gridsize` must be an integer multiple (and smaller) than
             `input_gridsize`.  If not, a `RuntimeError` will be raised by
-            `subsample.subsample_grid`.
+            `downsample.downsample_grid`.
 
     Returns
     ----------
@@ -106,8 +108,8 @@ def test_homogenous_input(input_gridsize=128, output_gridsize=64):
     input_grid = np.ones((input_gridsize, input_gridsize, input_gridsize),
                          dtype=np.float64)
 
-    # Perform the subsampling.
-    output_grid = subsample.subsample_grid(input_grid, output_gridsize)
+    # Perform the downsampling.
+    output_grid = downsample.downsample_grid(input_grid, output_gridsize)
 
     # Find any instances where the output grid is not 1.
     w = np.where((output_grid <= 1.0-1e-6) & (output_grid >= 1.0+1e-6))[0]
@@ -145,7 +147,7 @@ def test_multiple_input(input_gridsize=128, output_gridsize=64):
         ..note::
             `output_gridsize` must be an integer multiple (and smaller) than
             `input_gridsize`.  If not, a `RuntimeError` will be raised by
-            `subsample.subsample_grid`.
+            `downsample.downsample_grid`.
 
     Returns
     ----------
@@ -171,8 +173,8 @@ def test_multiple_input(input_gridsize=128, output_gridsize=64):
                                        range(output_gridsize)):
         input_grid[i*conversion, j*conversion, k*conversion] = conversion**3 
 
-    # Run the subsampler.
-    output_grid = subsample.subsample_grid(input_grid, output_gridsize)
+    # Run the downsampler.
+    output_grid = downsample.downsample_grid(input_grid, output_gridsize)
 
 
     # Find any instances where the output grid is not 1.
@@ -205,7 +207,7 @@ def test_random(input_gridsize=128, output_gridsize=64,
         ..note::
             `output_gridsize` must be an integer multiple (and smaller) than
             `input_gridsize`.  If not, a `RuntimeError` will be raised by
-            `subsample.subsample_grid`.
+            `downsample.downsample_grid`.
 
     seed : int, optional
         Seed used for the random number generator. Default : 12.
@@ -240,13 +242,13 @@ def test_random(input_gridsize=128, output_gridsize=64,
                                 input_gridsize)
 
     # Run the code with the randomly generated input grid.
-    output_grid = subsample.subsample_grid(input_grid, output_gridsize)
+    output_grid = downsample.downsample_grid(input_grid, output_gridsize)
 
-    # Now we want to read in the known grid. 
+    # Now we want to set up the known grid.
     known_grid_name = "{0}/known_grid_in{1}_out{2}_seed{3}.npz" \
-                      .format(test_dir, input_gridsize, output_gridsize, seed)
+                       .format(test_dir, input_gridsize, output_gridsize, seed)   
 
-    # If we're saving a new 'correct' output grid, do so and exit.    
+    # If we're saving a new 'correct' output grid, do so and exit.
     if save_output: 
         np.savez(known_grid_name, output_grid)
         return
