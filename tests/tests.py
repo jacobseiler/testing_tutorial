@@ -20,6 +20,8 @@ sys.path.append(script_dir)
 
 import downsample 
 
+tol = 1e-16  # Set the tolerance of the tests. 
+
 
 def unit_tests(grid, expected_gridsize, expected_datatype=np.float64):
     """
@@ -112,7 +114,7 @@ def test_homogenous_input(input_gridsize=128, output_gridsize=64):
     output_grid = downsample.downsample_grid(input_grid, output_gridsize)
 
     # Find any instances where the output grid is not 1.
-    w = np.where((output_grid <= 1.0-1e-6) & (output_grid >= 1.0+1e-6))[0]
+    w = np.where((output_grid <= 1.0-tol) & (output_grid >= 1.0+tol))[0]
 
     # Raise error.
     if len(w) > 0:
@@ -158,8 +160,8 @@ def test_multiple_input(input_gridsize=128, output_gridsize=64):
     ----------
 
     RuntimeError
-        Raised if the output grid contains values that are not within the range
-        0.99999 to 1.00001.
+        Raised if the output grid contains values that are not close to 1
+        (within tolerance defined by the global variable `tol`).
     """
 
     # Ratio in grid size. 
@@ -178,10 +180,8 @@ def test_multiple_input(input_gridsize=128, output_gridsize=64):
 
 
     # Find any instances where the output grid is not 1.
-    w = np.where((output_grid <= 1.0-1e-6) & (output_grid >= 1.0+1e-6))[0]    
-
-    # Raise errors.
-    if len(w) > 0:
+    w = np.where((output_grid <= 1.0-tol) & (output_grid >= 1.0+tol))[0]    
+    if len(w) > 0: 
         print("We tested an input grid with every {0} cell containing a value "
               "of {1}. We expected the output grid to contain values of 1.0 " 
               "as well.".format(conversion, conversion**3)) 
@@ -230,8 +230,8 @@ def test_random(input_gridsize=128, output_gridsize=64,
     ----------
 
     RuntimeError
-        Raised if the randomly generated input grid does not match (to a 1e-6
-        tolerance) the saved grid. 
+        Raised if the randomly generated input grid does not match (to a
+        tolerance defined by the global variable `tol`) the saved grid. 
     """
 
     # Set the RNG seed and generate an input grid.
@@ -258,7 +258,7 @@ def test_random(input_gridsize=128, output_gridsize=64,
     known_grid.shape = (output_gridsize, output_gridsize, output_gridsize)
 
     # Find any instances where the grids disagree.
-    w = np.where(abs(known_grid - output_grid) > 1e-6)[0]
+    w = np.where(abs(known_grid - output_grid) > tol)[0]
 
     # Raise error.
     if len(w) > 0:
